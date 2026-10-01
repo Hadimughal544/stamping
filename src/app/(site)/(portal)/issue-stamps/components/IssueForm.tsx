@@ -35,6 +35,7 @@ export function IssueForm({ purposes }: { purposes: Purpose[] }) {
   const [applicantErrors, setApplicantErrors] = useState<PersonErrors>({});
   const [agentErrors, setAgentErrors] = useState<AgentErrors>({});
   const [items, setItems] = useState<DraftItem[]>([]);
+  const [issueDate, setIssueDate] = useState("");
   const [otp, setOtp] = useState<{ contact: string; resendIn: number; devCode?: string } | null>(null);
   const [busy, setBusy] = useState(false);
 
@@ -54,8 +55,11 @@ export function IssueForm({ purposes }: { purposes: Purpose[] }) {
       return;
     }
 
+    // No contact number means there is nothing to verify by OTP.
+    if (!verifier.contact) return goToConfirmation();
+
     setBusy(true);
-    const res = await startVerification(verifier.contact, through === "self" ? applicant.cnic : undefined);
+    const res = await startVerification(verifier.contact, through === "self" ? applicant.cnic || undefined : undefined);
     setBusy(false);
     if (res.verified) return goToConfirmation();
     if (!res.ok) return toast(res.error, "error");
@@ -74,7 +78,15 @@ export function IssueForm({ purposes }: { purposes: Purpose[] }) {
       through,
       applicant: applicant as Person,
       agent: through === "agent" ? (agent as Agent) : null,
-      items: items.map(({ stockId, purposeId, purposeOther, reason }) => ({ stockId, purposeId, purposeOther, reason })),
+      issueDate,
+      items: items.map(({ stockId, customSerial, denomination, purposeId, purposeOther, reason }) => ({
+        stockId,
+        customSerial,
+        denomination,
+        purposeId,
+        purposeOther,
+        reason,
+      })),
     });
     setBusy(false);
     if (!res.ok) return toast(res.error, "error");
@@ -124,8 +136,10 @@ export function IssueForm({ purposes }: { purposes: Purpose[] }) {
             <StampDetails
               purposes={purposes}
               items={items}
+              issueDate={issueDate}
+              onIssueDateChange={setIssueDate}
               onAdd={(added) => setItems((cur) => [...cur, ...added])}
-              onRemove={(id) => setItems((cur) => cur.filter((i) => i.stockId !== id))}
+              onRemove={(key) => setItems((cur) => cur.filter((i) => i.key !== key))}
             />
           </SectionCard>
 
@@ -141,6 +155,7 @@ export function IssueForm({ purposes }: { purposes: Purpose[] }) {
           applicant={applicant}
           agent={through === "agent" ? agent : null}
           items={items}
+          issueDate={issueDate}
           busy={busy}
           onBack={() => setStep(0)}
           onConfirm={confirm}

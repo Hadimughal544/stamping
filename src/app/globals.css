@@ -134,14 +134,14 @@ select.u-field {
   width: 210mm;
   min-height: 297mm;
   margin: 0 auto 24px;
-  padding: 8mm 24mm 12mm;
+  padding: 30mm 24mm 12mm;
   overflow: hidden;
   background: #fff;
   color: #111;
   font-family: Arial, Helvetica, sans-serif;
-  font-size: 10px;
+  font-size: 10.5px;
 }
-.stamp-watermark {
+/* .stamp-watermark {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -160,8 +160,8 @@ select.u-field {
   margin-top: 8mm;
   text-align: center;
   color: rgba(200, 0, 0, 0.18);
-  font-size: 64px;
-}
+  font-size: 64px; */
+/* } */
 /* Public scan page: shrink the A4 sheet to fit phone screens. */
 @media (max-width: 830px) {
   .stamp-scale .stamp-paper { zoom: 0.8; }
@@ -175,76 +175,98 @@ select.u-field {
 @media (max-width: 380px) {
   .stamp-scale .stamp-paper { zoom: 0.4; }
 }
+.stamp-top {
+  display: grid;
+  grid-template-columns: 42mm 1fr 59mm;
+  min-height: 43mm;
+  align-items: start;
+}
+.stamp-emblem-wrap {
+  padding-top: 8mm;
+  text-align: center;
+}
+.stamp-emblem {
+  width: 34mm;
+  height: 34mm;
+  object-fit: contain;
+  mix-blend-mode: multiply;
+}
+.stamp-heading {
+  padding-top: 0;
+  text-align: center;
+}
 .stamp-title {
   margin: 0;
-  text-align: center;
   font-size: 19px;
-  line-height: 1;
+  line-height: 1.1;
   font-weight: 700;
-  text-decoration: underline;
 }
-.stamp-header {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  min-height: 31mm;
-  margin-top: 5mm;
-}
-.stamp-barcode {
-  width: 51mm;
-  height: 9mm;
-  margin-top: 1mm;
-  object-fit: fill;
+.stamp-heading h2 {
+  margin: 1mm 0 0;
+  font-size: 14px;
+  line-height: 1.2;
+  font-weight: 700;
 }
 .stamp-qr-wrap {
-  display: flex;
-  width: 29mm;
-  flex-direction: column;
-  align-items: center;
-  gap: 1mm;
-  margin-right: 1mm;
-  text-align: center;
-  font-size: 8px;
-  line-height: 1.15;
+  position: absolute;
+  right: 13mm;
+  bottom: 22mm;
 }
 .stamp-qr {
-  width: 22mm;
-  height: 22mm;
+  width: 24mm;
+  height: 24mm;
   image-rendering: pixelated;
+}
+.stamp-header-meta {
+  padding-top: 4mm;
+  font-size: 10px;
+  line-height: 1.65;
+}
+.stamp-header-meta > div {
+  display: grid;
+  grid-template-columns: 22mm 1fr;
+  white-space: nowrap;
+}
+.stamp-header-meta > .stamp-amount {
+  display: flex;
+  gap: 4px;
+}
+.stamp-header-meta span {
+  color: #333;
+}
+.stamp-header-meta strong {
+  font-weight: 700;
 }
 .stamp-details {
   width: 100%;
-  margin-top: 2mm;
+  margin-top: 4mm;
 }
 .stamp-row {
   display: grid;
-  grid-template-columns: 38mm 1fr;
-  min-height: 4.9mm;
+  grid-template-columns: 48mm 1fr;
+  min-height: 5.1mm;
   align-items: baseline;
   line-height: 1.25;
 }
 .stamp-row > span {
-  color: #24456e;
+  color: #222;
   font-weight: 400;
 }
 .stamp-row > strong {
   min-width: 0;
-  color: #24456e;
+  color: #222;
   font-weight: 400;
-}
-.stamp-gap {
-  height: 7mm;
 }
 .stamp-notice {
   box-sizing: border-box;
   width: 100%;
   min-height: 17mm;
-  margin: 8mm 0 0;
-  padding: 4mm 5mm;
+  margin: 3mm 0 0;
+  padding: 3.5mm 5mm;
   border: 0.5mm solid #333;
   color: #111;
   font-family: "Noto Nastaliq Urdu", "Noto Naskh Arabic", Tahoma, serif;
-  font-size: 8px;
+  font-size: 9px;
   line-height: 1.6;
   text-align: center;
 }
@@ -286,3 +308,72 @@ select.u-field {
     display: none !important;
   }
 }
+
+.stamp-write-below {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  margin-top: 8px;
+  gap: 10px;
+}
+
+.stamp-write-line {
+  flex: 1;
+  height: 1px;
+  background: #999;
+}
+
+.stamp-write-text {
+  white-space: nowrap;
+  font-size: 7px;
+  color: #777;
+  font-weight: 400;
+}
+
+.stamp-paper {
+  position: relative;
+  overflow: hidden;
+  background: white;
+}
+
+.stamp-paper {
+  box-sizing: border-box;
+  position: relative;
+  width: 210mm;
+  min-height: 297mm;
+  margin: 0 auto 24px;
+  padding: 30mm 24mm 12mm;
+  overflow: hidden;
+  background: #fff;
+  color: #111;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 10.5px;
+}
+
+/* Background watermark */
+.stamp-watermark {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  pointer-events: none;
+}
+
+.stamp-watermark img {
+  width: 125mm;
+  height: 125mm;
+  object-fit: contain;
+
+  opacity: 0.035;
+}
+
+/* Keep actual stamp content above watermark */
+.stamp-content {
+  position: relative;
+  z-index: 1;
+}
+

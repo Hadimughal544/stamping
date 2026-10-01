@@ -12,6 +12,6 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  // Everything except login, the public stamp scan page, Next internals and static files.
-  matcher: ["/((?!login|stamp/|_next/static|_next/image|favicon.ico|tiles/).*)"],
+  // Everything except login, the public stamp scan/verify pages, Next internals and static files.
+  matcher: ["/((?!login|stamp/|verify-stamp|_next/static|_next/image|favicon.ico|tiles/).*)"],
 };

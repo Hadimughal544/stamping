@@ -15,7 +15,7 @@ export default async function PrintPage({ params }: { params: Promise<{ id: stri
 
   // Each QR opens that stamp's public verification page.
   const base = await getBaseUrl();
-  const links = txn.items.map((it) => `${base}/stamp/${encodeURIComponent(it.serial)}`);
+  const links = txn.items.map((it) => `${base}/verify-stamp?serial=${encodeURIComponent(it.serial)}`);
   const codes = await Promise.all(txn.items.map((it, i) => renderStampCodes(it.serial, links[i])));
   const a = txn.applicant;
 
@@ -28,11 +28,12 @@ export default async function PrintPage({ params }: { params: Promise<{ id: stri
           serial={it.serial}
           denomination={it.denomination}
           purpose={it.purpose}
-          reason={it.reason}
-          applicant={`${a.name} [${a.cnic}]`}
-          relation={`${a.relation} ${a.relationName}`}
-          agent={txn.agentJson?.name ?? "Self"}
-          address={a.address}
+          reason={it.reason ?? ""}
+          applicant={a.cnic ? `${a.name ?? ""} [${a.cnic}]` : (a.name ?? "")}
+          relationLabel={a.relation ?? ""}
+          relationName={a.relationName ?? ""}
+          agent={txn.agentJson?.name || "Self"}
+          address={a.address ?? ""}
           issuedAt={txn.issuedAt}
           validUntil={txn.validUntil}
           vendor={`${user.displayName} | ${user.username}`}

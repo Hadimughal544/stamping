@@ -17,9 +17,9 @@ function AgentTable({ agent }: { agent: AgentDraft }) {
         </thead>
         <tbody>
           <tr>
-            <td>{agent.name}</td>
-            <td>{agent.cnic}</td>
-            <td>{agent.contact}</td>
+            <td>{agent.name || "-"}</td>
+            <td>{agent.cnic || "-"}</td>
+            <td>{agent.contact || "-"}</td>
             <td>{agent.email || "-"}</td>
           </tr>
         </tbody>
@@ -43,13 +43,11 @@ function PersonTable({ person }: { person: PersonDraft }) {
         </thead>
         <tbody>
           <tr>
-            <td>
-              {person.name} {person.relation} {person.relationName}
-            </td>
-            <td>{person.cnic}</td>
-            <td>{person.contact}</td>
+            <td>{[person.name, person.relation, person.relationName].filter(Boolean).join(" ") || "-"}</td>
+            <td>{person.cnic || "-"}</td>
+            <td>{person.contact || "-"}</td>
             <td>{person.email || "-"}</td>
-            <td>{person.address}</td>
+            <td>{person.address || "-"}</td>
           </tr>
         </tbody>
       </table>
@@ -62,12 +60,13 @@ type Props = {
   applicant: PersonDraft;
   agent: AgentDraft | null;
   items: DraftItem[];
+  issueDate: string;
   busy: boolean;
   onBack: () => void;
   onConfirm: () => void;
 };
 
-export function Confirmation({ through, applicant, agent, items, busy, onBack, onConfirm }: Props) {
+export function Confirmation({ through, applicant, agent, items, issueDate, busy, onBack, onConfirm }: Props) {
   const total = items.reduce((s, i) => s + i.denomination, 0);
 
   return (
@@ -77,6 +76,8 @@ export function Confirmation({ through, applicant, agent, items, busy, onBack, o
           <div>
             <p className="font-bold">Total Payable Amount (Rs.):</p>
             <p className="pl-2">{total}</p>
+            <p className="mt-1 font-bold">Issue Date:</p>
+            <p className="pl-2">{issueDate ? issueDate.split("-").reverse().join("-") : "Current date & time"}</p>
           </div>
           <div>
             <p className="font-bold">No. Of Stamps:</p>
@@ -96,12 +97,12 @@ export function Confirmation({ through, applicant, agent, items, busy, onBack, o
             </thead>
             <tbody>
               {items.map((it, i) => (
-                <tr key={it.stockId}>
+                <tr key={it.key}>
                   <td>{i + 1}</td>
                   <td>{it.serial}</td>
                   <td>{it.denomination}</td>
                   <td>{it.purposeLabel}</td>
-                  <td>{it.reason}</td>
+                  <td>{it.reason || "-"}</td>
                 </tr>
               ))}
             </tbody>

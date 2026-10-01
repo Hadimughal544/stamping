@@ -44,20 +44,20 @@ export const stampStock = pgTable(
 
 export const applicants = pgTable("applicants", {
   id: serial("id").primaryKey(),
-  name: text("name").notNull(),
-  cnic: text("cnic").notNull().unique(),
-  relation: text("relation").notNull(),
-  relationName: text("relation_name").notNull(),
-  contact: text("contact").notNull(),
+  name: text("name"),
+  cnic: text("cnic").unique(),
+  relation: text("relation"),
+  relationName: text("relation_name"),
+  contact: text("contact"),
   email: text("email"),
-  address: text("address").notNull(),
+  address: text("address"),
   contactVerifiedAt: timestamp("contact_verified_at", { withTimezone: true }),
 });
 
 export type AgentInfo = {
-  name: string;
-  cnic: string;
-  contact: string;
+  name?: string;
+  cnic?: string;
+  contact?: string;
   email?: string;
 };
 
@@ -86,7 +86,7 @@ export const transactionItems = pgTable("transaction_items", {
     .references(() => stampStock.id),
   purposeId: integer("purpose_id").references(() => purposes.id),
   purposeOther: text("purpose_other"),
-  reason: text("reason").notNull(),
+  reason: text("reason"),
 });
 
 export const otpCodes = pgTable("otp_codes", {
