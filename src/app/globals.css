@@ -465,7 +465,7 @@ select.u-field {
   width: 770px;
   height: 90px;
   padding: 0 4.9px 0 0;
-  border: 3px solid #212529;
+  border: 4px solid #212529;
   font-family: Calibri, var(--font-naskh, "Noto Naskh Arabic"), "Noto Naskh Arabic", sans-serif;
   font-size: 13.3px;
   font-weight: 700;
