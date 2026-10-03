@@ -2,10 +2,14 @@
 
 import { useEffect, useState } from "react";
 import { SelectField, TextField } from "@/components/Fields";
+import { generateSerials } from "@/lib/serial";
+
+/** How many generated serials the dropdown offers. */
+const POOL_SIZE = 50;
 
 export type Purpose = { id: number; name: string; articleCode: string };
 export type DraftItem = {
-  /** Unique row key: "s<stockId>" for a picked serial, "c<serial>" for a custom one. */
+  /** Unique row key: "c<serial>". Serials are generated or typed in the browser and saved on issue. */
   key: string;
   stockId: number | null;
   customSerial: string | null;
@@ -39,47 +43,20 @@ export function StampDetails({ purposes, items, issueDate, onIssueDateChange, on
   const [others, setOthers] = useState(false);
   const [purposeOther, setPurposeOther] = useState("");
   const [denomination, setDenomination] = useState("");
-  // The typed denomination, debounced; serials are loaded (and generated when low) for this value.
-  const [query, setQuery] = useState("");
-  const [serials, setSerials] = useState<{ id: number; serial: string }[]>([]);
-  const [serialId, setSerialId] = useState("");
+  // Serials are generated in the browser; they are saved only when the stamps are issued.
+  const [serials, setSerials] = useState<string[]>([]);
+  const [selected, setSelected] = useState("");
   const [customSerial, setCustomSerial] = useState(false);
   const [customValue, setCustomValue] = useState("");
   const [count, setCount] = useState("1");
   const [reason, setReason] = useState("");
   const [error, setError] = useState("");
-  const [loadingSerials, setLoadingSerials] = useState(false);
 
-  useEffect(() => {
-    setSerialId("");
-    const t = setTimeout(() => setQuery(denomination), 400);
-    return () => clearTimeout(t);
-  }, [denomination]);
+  // Generated after mount so the server and client renders match.
+  useEffect(() => setSerials(generateSerials(POOL_SIZE)), []);
 
-  // Load available serials for the typed denomination; the server generates more when fewer than 50 remain.
-  useEffect(() => {
-    const n = Number(query);
-    if (!query || n > 99999) {
-      setSerials([]);
-      setLoadingSerials(false);
-      return;
-    }
-    let cancelled = false;
-    setLoadingSerials(true);
-    fetch(`/api/serials?denomination=${n}`)
-      .then((r) => r.json())
-      .then((d: { serials?: { id: number; serial: string }[] }) => {
-        if (!cancelled) setSerials(d.serials ?? []);
-      })
-      .finally(() => !cancelled && setLoadingSerials(false));
-    return () => {
-      cancelled = true;
-    };
-  }, [query]);
-
-  const settled = denomination === query && !loadingSerials;
-  const taken = new Set(items.map((i) => i.stockId));
-  const free = settled ? serials.filter((s) => !taken.has(s.id)) : [];
+  const added = new Set(items.map((i) => i.serial));
+  const free = serials.filter((s) => !added.has(s));
 
   function add() {
     setError("");
@@ -113,15 +90,19 @@ export function StampDetails({ purposes, items, issueDate, onIssueDateChange, on
     }
 
     if (!denomination) return setError("Enter a denomination to pick a serial number, or tick Custom.");
-    if (!serialId) return setError("Please select a serial number.");
+    if (!selected) return setError("Please select a serial number.");
 
-    // Take the selected serial plus the next available ones in stock order.
-    const start = free.findIndex((s) => String(s.id) === serialId);
+    // Take the selected serial plus the next ones in the list.
+    const start = free.indexOf(selected);
     const chosen = free.slice(start, start + n);
-    if (chosen.length < n) return setError(`Only ${free.length - start} stamp(s) available from the selected serial.`);
+    if (chosen.length < n) return setError(`Only ${free.length - start} serial number(s) left from the selected one.`);
 
-    onAdd(chosen.map((s) => ({ ...common, key: `s${s.id}`, stockId: s.id, customSerial: null, serial: s.serial })));
-    setSerialId("");
+    onAdd(chosen.map((s) => ({ ...common, key: `c${s}`, stockId: null, customSerial: s, serial: s })));
+    // Top the list back up so there are always POOL_SIZE serials to choose from.
+    const used = new Set(chosen);
+    const rest = free.filter((s) => !used.has(s));
+    setSerials([...rest, ...generateSerials(POOL_SIZE - rest.length, [...rest, ...added, ...chosen])]);
+    setSelected("");
     setCount("1");
   }
 
@@ -167,11 +148,11 @@ export function StampDetails({ purposes, items, issueDate, onIssueDateChange, on
           ) : (
             <SelectField
               label="Serial Number"
-              placeholder={denomination && !settled ? "Loading…" : "Select serial number"}
-              value={serialId}
-              onChange={setSerialId}
-              disabled={!settled}
-              options={free.map((s) => ({ value: String(s.id), label: s.serial }))}
+              placeholder="Select serial number"
+              value={selected}
+              onChange={setSelected}
+              disabled={free.length === 0}
+              options={free.map((s) => ({ value: s, label: s }))}
             />
           )}
           <label className="mt-4 flex w-fit cursor-pointer items-center gap-2 text-[17px]">

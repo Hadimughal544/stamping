@@ -52,8 +52,8 @@ async function main() {
     console.log(`Inserted ${PURPOSES.length} purposes`);
   }
 
-  // Serials are generated on demand when the vendor picks a denomination (see ensureStock).
-  // Clear old unissued DEMO- stock so the dropdown only shows ES-LHR- serials.
+  // Serials are generated in the browser on the issue form (see src/lib/serial.ts).
+  // Clear old unissued DEMO- stock.
   const removed = await db
     .delete(schema.stampStock)
     .where(and(like(schema.stampStock.serial, "DEMO-%"), eq(schema.stampStock.status, "AVAILABLE")))

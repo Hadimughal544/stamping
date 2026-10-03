@@ -109,7 +109,7 @@ select.u-field {
 .data-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 17px;
+  font-size: 17.5px;
 }
 .data-table th,
 .data-table td {
@@ -377,3 +377,128 @@ select.u-field {
   z-index: 1;
 }
 
+
+/* Low-denomination sheet (below Rs 500), measured from the reference print. */
+.stamp-low {
+  padding: 8mm 23.8mm 12mm;
+  color: #000;
+  font-family: Calibri, var(--font-carlito), "Segoe UI", sans-serif;
+  font-size: 12.5px;
+}
+.stamp-low-title {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 18px;
+  line-height: 1;
+  font-weight: 700;
+  text-align: center;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.stamp-low-header {
+  --stamp-low-label: 31mm;
+  margin-top: 6.8mm;
+}
+.stamp-low-barcode {
+  display: block;
+  width: 51mm;
+  height: 7.6mm;
+  margin-bottom: 3mm;
+  image-rendering: pixelated;
+}
+.stamp-low-qr-wrap {
+  position: absolute;
+  top: 21.5mm;
+  left: 153mm;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2mm;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 10px;
+  white-space: nowrap;
+}
+.stamp-low-qr {
+  width: 22mm;
+  height: 22mm;
+  image-rendering: pixelated;
+}
+.stamp-low-gap {
+  height: 7.5mm;
+}
+.stamp-low-row {
+  display: grid;
+  grid-template-columns: var(--stamp-low-label, 36.7mm) 1fr;
+  height: 4.9mm;
+  align-items: baseline;
+  line-height: 4.9mm;
+  white-space: nowrap;
+}
+.stamp-low-value {
+  font-size: 13.5px;
+}
+.stamp-low-header .stamp-low-value {
+  font-size: 14px;
+}
+.stamp-low .is-bold {
+  font-weight: 700;
+}
+.stamp-low .is-small {
+  font-size: 10px;
+}
+.stamp-low .is-indent {
+  padding-left: 1.1mm;
+}
+.stamp-low .is-shifted {
+  padding-left: 5.5mm;
+}
+.stamp-low-notice {
+  box-sizing: border-box;
+  width: 144.4mm;
+  height: 17mm;
+  margin-top: 8mm;
+  padding: 3.5mm 2mm 0;
+  border: 1px solid #000;
+  font-family: var(--font-naskh), "Noto Naskh Arabic", Arial, sans-serif;
+  font-size: 10px;
+  line-height: 1.6;
+  text-align: right;
+}
+
+/* Public "eStamp Online Verification" page for low-denomination stamps (/stamp/<serial>). */
+.verify-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  font-size: 17.5px;
+  color: #333;
+}
+.verify-table th,
+.verify-table td {
+  height: 46px;
+  padding: 0 10px;
+  border: 1px solid #ddd;
+  text-align: left;
+  vertical-align: middle;
+}
+.verify-table th {
+  width: 27.7%;
+  font-weight: 700;
+}
+.verify-table td {
+  font-weight: 400;
+  overflow-wrap: anywhere;
+}
+@media (max-width: 640px) {
+  .verify-table {
+    font-size: 15px;
+  }
+  .verify-table th {
+    width: 38%;
+  }
+  .verify-table th,
+  .verify-table td {
+    padding: 6px 8px;
+  }
+}

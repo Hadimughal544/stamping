@@ -6,7 +6,7 @@ const bree = Bree_Serif({ variable: "--font-bree", weight: "400", subsets: ["lat
 const logoFace = Baloo_2({ variable: "--font-logo-face", weight: ["700", "800"], subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "e-Stamp Demo",
+  title: "Government of Punjab-eStamping Vendor Portal",
   description: "Stamp vendor portal. A learning project, not affiliated with any government body.",
 };
 

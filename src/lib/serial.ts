@@ -1,29 +1,44 @@
-import "server-only";
-import { randomInt } from "node:crypto";
-import { and, eq, sql } from "drizzle-orm";
-import { db, schema } from "@/db";
+const SERIAL_LENGTH = 16;
+const LETTER_COUNT = 5;
+const DIGITS = "0123456789";
+const LETTERS = "ABCDEF";
 
-/** A new stamp serial such as "ES-LHR-482917365" (9 random digits). */
-export function generateSerial() {
-  return `PB-LHR-${randomInt(0, 1_000_000_000).toString().padStart(9, "0")}`;
+/** Unbiased random integer in [0, max) using Web Crypto. */
+function randomInt(max: number) {
+  const range = 0x100000000;
+  const limit = range - (range % max);
+  const buf = new Uint32Array(1);
+  do {
+    crypto.getRandomValues(buf);
+  } while (buf[0] >= limit);
+  return buf[0] % max;
 }
 
-/**
- * Makes sure the vendor has at least `min` unissued serials of this denomination, generating new
- * random ones when short. A rare serial collision is skipped; the next call tops up again.
- */
-export async function ensureStock(vendorId: number, denomination: number, min = 50) {
-  const { stampStock } = schema;
-  const [{ count }] = await db
-    .select({ count: sql<number>`count(*)::int` })
-    .from(stampStock)
-    .where(
-      and(eq(stampStock.vendorId, vendorId), eq(stampStock.denomination, denomination), eq(stampStock.status, "AVAILABLE")),
-    );
-  if (count >= min) return;
+/** A new stamp serial such as "PB-LHR-280D10DB8969D1F4" (5 random letters + 11 random digits, shuffled). */
+export function generateSerial() {
+  // Pick which 5 of the 16 positions will be letters (partial Fisher-Yates shuffle).
+  const positions = Array.from({ length: SERIAL_LENGTH }, (_, i) => i);
+  for (let i = 0; i < LETTER_COUNT; i++) {
+    const j = i + randomInt(SERIAL_LENGTH - i);
+    [positions[i], positions[j]] = [positions[j], positions[i]];
+  }
+  const letterPositions = new Set(positions.slice(0, LETTER_COUNT));
 
-  await db
-    .insert(stampStock)
-    .values(Array.from({ length: min - count }, () => ({ serial: generateSerial(), denomination, vendorId })))
-    .onConflictDoNothing();
+  let random = "";
+  for (let i = 0; i < SERIAL_LENGTH; i++) {
+    const set = letterPositions.has(i) ? LETTERS : DIGITS;
+    random += set[randomInt(set.length)];
+  }
+  return `PB-LHR-${random}`;
+}
+
+/** `count` distinct new serials, none of which are in `exclude`. */
+export function generateSerials(count: number, exclude: Iterable<string> = []) {
+  const skip = new Set(exclude);
+  const out = new Set<string>();
+  while (out.size < count) {
+    const s = generateSerial();
+    if (!skip.has(s)) out.add(s);
+  }
+  return [...out];
 }

@@ -1,25 +1,18 @@
 import { DummyLink } from "./DummyLink";
-
+import Image from "next/image";
 const columns: { title: string; links: string[] }[] = [
   { title: "About Us", links: ["e-Stamping", "Privacy Policy"] },
   { title: "Help", links: ["FAQs", "User Guide ( Urdu , English )"] },
   { title: "Contact Us", links: ["support@estamp-portal.example"] },
 ];
 
-function Seal() {
-  return (
-    <svg viewBox="0 0 56 56" className="h-13 w-13" fill="none" stroke="currentColor" aria-hidden>
-      <circle cx="28" cy="28" r="26" strokeWidth="1.5" />
-      <circle cx="28" cy="28" r="20" strokeWidth="1" />
-      <circle cx="28" cy="28" r="9" strokeWidth="1.5" />
-      <path d="M28 8v6M28 42v6M8 28h6M42 28h6" strokeWidth="1.5" />
-    </svg>
-  );
+function Bar() {
+  return <span aria-hidden className="mx-3 inline-block h-6 w-0.75 bg-white align-middle" />;
 }
 
 export function Footer() {
   return (
-    <footer className="no-print bg-footer pt-4 pb-4 text-white">
+    <footer className="no-print bg-[#58585b] pt-4 pb-4 text-white">
       <div className="mx-auto max-w-250 px-4">
         <div className="grid gap-x-8 sm:grid-cols-3">
           {columns.map((col) => (
@@ -33,15 +26,48 @@ export function Footer() {
             </div>
           ))}
         </div>
+
         <div className="mt-10 border-t border-white/30" />
-        <div className="mt-5 flex items-center justify-center gap-3">
-          <Seal />
-          <span dir="rtl" lang="ur" className="text-[17px]">
-            ای اسٹامپ پورٹل
-          </span>
-          <Seal />
+
+        {/* Logos + Urdu text row */}
+        <div
+          dir="ltr"
+          className="mt-5 flex flex-wrap items-center justify-center gap-x-3 gap-y-2"
+        >
+          <Image
+            src="/images/PLRA-logo.jpg"
+            alt="Punjab Land Records Authority"
+            width={96}
+            height={96}
+            unoptimized
+            className="h-24 w-auto object-contain"
+          />
+
+          <div
+            dir="rtl"
+            lang="ur"
+            className="flex items-center text-[22px] font-semibold whitespace-nowrap"
+          >
+            <span>حکومت پنجاب</span>
+            <Bar />
+            <span>پنجاب لینڈ ریکارڈز اتھارٹی</span>
+            <Bar />
+            <span>بورڈ آف ریونیو</span>
+          </div>
+
+          <Image
+            src="/images/gov-logo-white.jpg"
+            alt="Government of the Punjab"
+            width={96}
+            height={96}
+            unoptimized
+            className="h-24 w-auto object-contain"
+          />
         </div>
-        <p className="mt-2 text-center text-[14px]">© Copyrights 2026 , All Rights Reserved</p>
+
+        <p className="-mt-1 text-center text-[20px]">
+          © Copyrights 2026 , All Rights Reserved
+        </p>
       </div>
     </footer>
   );

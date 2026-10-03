@@ -30,7 +30,7 @@ export function StampPaper(p: StampPaperProps) {
   {/* existing content */}
         <div className="stamp-heading">
           <h1 className="stamp-title">E-STAMP</h1>
-          <h2>(GOVERNMENT OF PUNJAB)</h2> search
+          <h2>(GOVERNMENT OF PUNJAB)</h2>
         </div>
       <div className=" flex items-center gap-15">
         <img className="stamp-emblem" src="/images/gov-logo.jpg" alt="Government of Punjab emblem" />
@@ -86,7 +86,7 @@ function StampRow({ label, value }: { label: string; value: string }) {
   return <div className="stamp-row"><strong>{label}</strong><strong>: {value}</strong></div>;
 }
 
-function numberToWords(value: number): string {
+export function numberToWords(value: number): string {
   const ones = ["Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine"];
   const teens = ["Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen"];
   const tens = ["", "", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety"];
