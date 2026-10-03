@@ -5,6 +5,7 @@ import { formatDate, formatDateTime, getTransaction, isLowDenomination } from "@
 import { numberToWords } from "@/components/StampPaper";
 import { Logo } from "@/components/Logo";
 import { Footer } from "@/components/Footer";
+import { vendorInfo } from "@/lib/vendors";
 
 const roboto = Roboto({ weight: ["400", "700"], subsets: ["latin"] });
 const robotoCondensed = Roboto_Condensed({ weight: "500", subsets: ["latin"] });
@@ -34,7 +35,7 @@ export default async function StampScanPage({ params }: { params: Promise<{ seri
     ["Delisted on/Validity", formatDate(txn.validUntil)],
     ["Amount in Words", `${numberToWords(item.denomination)} Rupees Only`],
     ["Reason", item.reason ?? ""],
-    ["Vendor Information", `${txn.vendor.displayName} | ${txn.vendor.vendorCode}`],
+    ["Vendor Information", vendorInfo(txn.vendor)],
   ];
 
   return (

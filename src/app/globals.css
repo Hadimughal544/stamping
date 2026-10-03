@@ -378,92 +378,107 @@ select.u-field {
 }
 
 
-/* Low-denomination sheet (below Rs 500), measured from the reference print. */
+/*
+ * Low-denomination sheet (below Rs 500). Laid out in CSS px exactly as the original site's printed
+ * stamp (a 1123 x 1588 px page), then zoomed so it fills one A4 sheet (793.7 / 1123).
+ * Text is placed by baseline: a line's top is its baseline, and the text is lifted by the font's ascent
+ * (with line-height 1: Calibri 0.8415em, Arial 0.8125em, Arial Black 0.8955em, as measured in Chrome).
+ */
 .stamp-low {
-  padding: 8mm 23.8mm 12mm;
-  color: #000;
-  font-family: Calibri, var(--font-carlito), "Segoe UI", sans-serif;
-  font-size: 12.5px;
+  width: 1123px;
+  height: 1588px;
+  min-height: 0;
+  padding: 0;
+  zoom: 0.70677;
+  color: #212529;
+  font-family: "Calibri Light", Calibri, var(--font-carlito, Carlito), sans-serif;
+  font-size: 19px;
+  font-weight: 300;
+}
+.stamp-low-title,
+.stamp-low-caption,
+.stamp-low-line > span {
+  position: absolute;
+  margin: 0;
+  line-height: 1;
+  white-space: nowrap;
 }
 .stamp-low-title {
-  margin: 0;
-  font-family: Arial, Helvetica, sans-serif;
-  font-size: 18px;
-  line-height: 1;
-  font-weight: 700;
-  text-align: center;
-  text-decoration: underline;
-  text-underline-offset: 2px;
+  left: 462.86px;
+  top: 70px;
+  transform: translateY(-0.8955em);
+  font-family: "Arial Black", Arial, sans-serif;
+  font-size: 30px;
+  font-weight: 900;
 }
-.stamp-low-header {
-  --stamp-low-label: 31mm;
-  margin-top: 6.8mm;
+.stamp-low-title::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(0.8955em + 1px);
+  height: 1px;
+  background: currentColor;
 }
 .stamp-low-barcode {
-  display: block;
-  width: 51mm;
-  height: 7.6mm;
-  margin-bottom: 3mm;
-  image-rendering: pixelated;
-}
-.stamp-low-qr-wrap {
   position: absolute;
-  top: 21.5mm;
-  left: 153mm;
-  transform: translateX(-50%);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2mm;
-  font-family: Arial, Helvetica, sans-serif;
-  font-size: 10px;
-  white-space: nowrap;
+  left: 128px;
+  top: 105px;
+  width: 270px;
+  height: 40px;
+  image-rendering: pixelated;
 }
 .stamp-low-qr {
-  width: 22mm;
-  height: 22mm;
+  position: absolute;
+  left: 747px;
+  top: 105px;
+  width: 130px;
+  height: 130px;
   image-rendering: pixelated;
 }
-.stamp-low-gap {
-  height: 7.5mm;
+.stamp-low-caption {
+  left: 720px;
+  top: 259px;
+  transform: translateY(-0.8125em);
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 16px;
+  font-weight: 400;
 }
-.stamp-low-row {
-  display: grid;
-  grid-template-columns: var(--stamp-low-label, 36.7mm) 1fr;
-  height: 4.9mm;
-  align-items: baseline;
-  line-height: 4.9mm;
-  white-space: nowrap;
+.stamp-low-line {
+  position: absolute;
+  left: 0;
+  top: var(--baseline);
 }
-.stamp-low-value {
-  font-size: 13.5px;
+.stamp-low-line > span {
+  top: 0;
+  transform: translateY(-0.8415em);
 }
-.stamp-low-header .stamp-low-value {
-  font-size: 14px;
-}
-.stamp-low .is-bold {
+.stamp-low-line > .is-bold {
+  font-family: Calibri, var(--font-carlito, Carlito), sans-serif;
   font-weight: 700;
 }
-.stamp-low .is-small {
-  font-size: 10px;
-}
-.stamp-low .is-indent {
-  padding-left: 1.1mm;
-}
-.stamp-low .is-shifted {
-  padding-left: 5.5mm;
-}
 .stamp-low-notice {
+  position: absolute;
+  left: 125px;
+  top: 582px;
   box-sizing: border-box;
-  width: 144.4mm;
-  height: 17mm;
-  margin-top: 8mm;
-  padding: 3.5mm 2mm 0;
-  border: 1px solid #000;
-  font-family: var(--font-naskh), "Noto Naskh Arabic", Arial, sans-serif;
-  font-size: 10px;
-  line-height: 1.6;
+  width: 770px;
+  height: 90px;
+  padding: 0 4.9px 0 0;
+  border: 3px solid #212529;
+  font-family: Calibri, var(--font-naskh, "Noto Naskh Arabic"), "Noto Naskh Arabic", sans-serif;
+  font-size: 13.3px;
+  font-weight: 700;
+  line-height: 1;
   text-align: right;
+  white-space: nowrap;
+  /* Baseline 31px below the inner top edge. */
+  padding-top: calc(31px - 0.8415em);
+}
+@media print {
+  .stamp-low {
+    margin: 0;
+  }
 }
 
 /* Public "eStamp Online Verification" page for low-denomination stamps (/stamp/<serial>). */

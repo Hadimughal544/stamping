@@ -2,6 +2,7 @@ import "server-only";
 import { and, asc, eq } from "drizzle-orm";
 import { db, schema } from "@/db";
 import { renderStampCodes } from "@/lib/stampCodes";
+import { vendorInfo } from "@/lib/vendors";
 import type { StampPaperProps } from "@/components/StampPaper";
 
 export type TransactionDetails = NonNullable<Awaited<ReturnType<typeof getTransaction>>>;
@@ -93,7 +94,7 @@ export async function stampPaperProps(
     address: a.address ?? "",
     issuedAt: txn.issuedAt,
     validUntil: txn.validUntil,
-    vendor: `${txn.vendor.displayName} | ${txn.vendor.vendorCode}`,
+    vendor: vendorInfo(txn.vendor),
     link,
     expired: txn.validUntil < new Date(),
     ...(await renderStampCodes(item.serial, link)),
