@@ -7,28 +7,30 @@ import { numberToWords, type StampPaperProps } from "@/components/StampPaper";
 const carlito = Carlito({ variable: "--font-carlito", weight: ["400", "700"], subsets: ["latin"] });
 const naskh = Noto_Naskh_Arabic({ variable: "--font-naskh", weight: "700", subsets: ["arabic"] });
 
+/** Every value starts at this X so the right-hand column is perfectly aligned. */
+const VALUE_X = 321;
+
 /**
- * One row of the sheet, positioned as on the reference print (CSS px on its 1123px-wide page):
- * label at `labelX`, value at `valueX`, both sitting on `baseline`.
+ * One row of the sheet: label at `labelX`, value at VALUE_X, both sitting on `baseline`.
  */
-type Line = { label: string; value: string; baseline: number; valueX: number; labelX?: number; bold?: boolean; size?: number };
+type Line = { label: string; value: string; baseline: number; labelX?: number; bold?: boolean; size?: number };
 
 /** The A4 sheet for stamps below Rs 500, laid out to match the original site's printed stamp. */
 export function LowStampPaper(p: StampPaperProps) {
   const lines: Line[] = [
-    { label: "ID", value: p.serial, baseline: 181, valueX: 318.47, bold: true },
-    { label: "Type", value: "Low Denomination", baseline: 207, valueX: 318.09, bold: true },
-    { label: "Amount", value: `Rs ${p.denomination}/-`, baseline: 233, valueX: 318.73, labelX: 128, bold: true },
-    { label: "Description", value: p.purpose, baseline: 298, valueX: 321.23, size: 17.1 },
-    { label: "Applicant", value: p.applicant, baseline: 324, valueX: 320.89 },
-    { label: p.relationLabel || "S/O", value: p.relationName, baseline: 350, valueX: 328.34 },
-    { label: "Agent", value: p.agent, baseline: 376, valueX: 322.08 },
-    { label: "Address", value: p.address, baseline: 402, valueX: 321.09 },
-    { label: "Issue Date", value: formatDateTime(p.issuedAt, { padHour: false }), baseline: 428, valueX: 320.92 },
-    { label: "Delisted On/Validity", value: formatDate(p.validUntil), baseline: 454, valueX: 321 },
-    { label: "Amount in Words", value: `${numberToWords(p.denomination)} Rupees Only`, baseline: 480, valueX: 320.69 },
-    { label: "Reason", value: p.reason, baseline: 506, valueX: 322.5 },
-    { label: "Vendor Information", value: p.vendor, baseline: 532, valueX: 322.72 },
+    { label: "ID", value: p.serial, baseline: 181, bold: true },
+    { label: "Type", value: "Low Denomination", baseline: 207, bold: true },
+    { label: "Amount", value: `Rs ${p.denomination}/-`, baseline: 233, labelX: 128, bold: true },
+    { label: "Description", value: p.purpose, baseline: 298, size: 17.1 },
+    { label: "Applicant", value: p.applicant, baseline: 324 },
+    { label: p.relationLabel || "S/O", value: p.relationName, baseline: 350 },
+    { label: "Agent", value: p.agent, baseline: 376 },
+    { label: "Address", value: p.address, baseline: 402 },
+    { label: "Issue Date", value: formatDateTime(p.issuedAt, { padHour: false }), baseline: 428 },
+    { label: "Delisted On/Validity", value: formatDate(p.validUntil), baseline: 454 },
+    { label: "Amount in Words", value: `${numberToWords(p.denomination)} Rupees Only`, baseline: 480 },
+    { label: "Reason", value: p.reason, baseline: 506 },
+    { label: "Vendor Information", value: p.vendor, baseline: 532 },
   ];
 
   return (
@@ -43,9 +45,9 @@ export function LowStampPaper(p: StampPaperProps) {
       {lines.map((l) => (
         <div key={l.label} className="stamp-low-line" style={{ "--baseline": `${l.baseline}px` } as CSSProperties}>
           <span style={{ left: l.labelX ?? 126 }}>{l.label} :</span>
-          <span className={l.bold ? "is-bold" : undefined} style={{ left: l.valueX, fontSize: l.size }}>
-            {l.value}
-          </span>
+          <span className={l.bold ? "is-bold" : undefined} style={{ left: VALUE_X, fontSize: l.size }}>
+  {l.value.trim()}
+</span>
         </div>
       ))}
 

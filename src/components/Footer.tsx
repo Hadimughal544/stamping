@@ -35,7 +35,7 @@ export function Footer() {
           className="mt-5 flex flex-wrap items-center justify-center gap-x-3 gap-y-2"
         >
           <Image
-            src="/images/PLRA-logo.jpg"
+            src="/images/PLRA-logo-transparent.png"
             alt="Punjab Land Records Authority"
             width={96}
             height={96}
@@ -56,7 +56,7 @@ export function Footer() {
           </div>
 
           <Image
-            src="/images/gov-logo-white.jpg"
+            src="/images/gov-logo-transparent.png"
             alt="Government of the Punjab"
             width={96}
             height={96}
